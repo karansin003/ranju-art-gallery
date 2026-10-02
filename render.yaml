@@ -24,14 +24,14 @@ services:
       - key: MAX_UPLOAD_MB
         value: 12
       - key: DEFAULT_ARTIST_NAME
-        value: Ranju Kumar
+        value: Ranju Kumari
       - key: DEFAULT_CONTACT_EMAIL
-        value: karansin8672@gmail.com
+        value: ranjukumari754@gmail.com
       - key: DEFAULT_CONTACT_PHONE
-        value: "+91 8294618672"
+        value: "+91 9717157794"
       - key: DEFAULT_WHATSAPP_NUMBER
-        value: "918294618672"
+        value: "919717157794"
       - key: DEFAULT_INSTAGRAM_URL
-        value: https://instagram.com/with_sk.2
+        value: https://www.instagram.com/ranju_creators
       - key: DEFAULT_YOUTUBE_URL
-        value: https://www.youtube.com/
+        value: https://www.youtube.com/@ranju_craft_creater

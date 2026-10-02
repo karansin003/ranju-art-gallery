@@ -173,7 +173,7 @@ export default function AdminSettings() {
               <label className="label">Instagram Profile URL</label>
               <input
                 className="input"
-                placeholder="https://instagram.com/with_sk.2"
+                placeholder="https://www.instagram.com/ranju_creators"
                 value={form.instagram_url || ''}
                 onChange={(e) => update('instagram_url', e.target.value)}
               />
@@ -182,7 +182,7 @@ export default function AdminSettings() {
               <label className="label">YouTube Channel URL</label>
               <input
                 className="input"
-                placeholder="https://youtube.com/..."
+                placeholder="https://www.youtube.com/@ranju_craft_creater"
                 value={form.youtube_url || ''}
                 onChange={(e) => update('youtube_url', e.target.value)}
               />
