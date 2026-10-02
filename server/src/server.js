@@ -108,8 +108,15 @@ app.get('*', (req, res, next) => {
 app.use(notFound);
 app.use(errorHandler);
 
+const { handleOneTimeAdminReset } = require('./services/adminResetService');
+
 const port = Number(process.env.PORT) || 10000;
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, "0.0.0.0", async () => {
   console.log(`Server running on 0.0.0.0:${port}`);
+  try {
+    await handleOneTimeAdminReset();
+  } catch (err) {
+    console.error('🔒 [AUTH] Startup reset check error:', err.message);
+  }
 });
 
