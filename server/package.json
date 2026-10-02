@@ -8,6 +8,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "db:setup": "node src/scripts/setupDb.js",
+    "admin:reset-password": "node src/scripts/resetAdminPassword.js",
     "test": "node src/scripts/testPostgresSuite.js",
     "migrate:cloudinary": "node src/scripts/migrateImagesToCloudinary.js"
   },

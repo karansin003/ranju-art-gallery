@@ -10,6 +10,7 @@
     "dev:server": "npm run dev --prefix server",
     "dev:client": "npm run dev --prefix client",
     "build:client": "npm run build --prefix client",
-    "db:setup": "npm run db:setup --prefix server"
+    "db:setup": "npm run db:setup --prefix server",
+    "admin:reset-password": "npm run admin:reset-password --prefix server"
   }
 }

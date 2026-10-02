@@ -23,4 +23,13 @@ async function count() {
   return rows[0] ? Number(rows[0].count) : 0;
 }
 
-module.exports = { findByEmail, create, count };
+async function updatePassword(id, password_hash) {
+  const [, meta] = await db.query(
+    'UPDATE users SET password_hash = ? WHERE id = ?',
+    [password_hash, id]
+  );
+  return (meta.affectedRows || meta.rowCount) > 0;
+}
+
+module.exports = { findByEmail, create, count, updatePassword };
+
