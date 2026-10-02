@@ -24,9 +24,13 @@ async function runTests() {
     }
   }
 
+  // Fetch current active admin user dynamically
+  const [adminRows] = await db.query("SELECT id, email, password_hash, role FROM users WHERE role = 'admin' LIMIT 1");
+  const activeAdminEmail = adminRows[0]?.email || 'ranjukumari754@gmail.com';
+
   // 1. Test missing environment variables / missing password
   try {
-    await resetAdminPassword({ email: 'admin@gallery.com', password: '' });
+    await resetAdminPassword({ email: activeAdminEmail, password: '' });
     assert(false, '1. Missing password rejected', 'Did not throw');
   } catch (err) {
     assert(err.message.includes('missing or empty'), '1. Missing password rejected', err.message);
@@ -34,7 +38,7 @@ async function runTests() {
 
   // 2. Test short password (< 8 chars)
   try {
-    await resetAdminPassword({ email: 'admin@gallery.com', password: 'short' });
+    await resetAdminPassword({ email: activeAdminEmail, password: 'short' });
     assert(false, '2. Short password rejected', 'Did not throw');
   } catch (err) {
     assert(err.message.includes('at least 8 characters'), '2. Short password rejected', err.message);
@@ -100,9 +104,9 @@ async function runTests() {
   }
 
   // 7. Successful one-time reset via handleOneTimeAdminReset & verify NO secrets logged
-  const originalAdmin = await userModel.findByEmail('admin@gallery.com');
+  const originalAdmin = await userModel.findByEmail(activeAdminEmail);
   if (!originalAdmin) {
-    console.error('FATAL: admin@gallery.com not found in database to test.');
+    console.error(`FATAL: ${activeAdminEmail} not found in database to test.`);
     process.exit(1);
   }
 
@@ -124,13 +128,13 @@ async function runTests() {
   try {
     // Run 1: First-time reset
     firstRunResult = await handleOneTimeAdminReset({
-      ADMIN_RESET_EMAIL: 'admin@gallery.com',
+      ADMIN_RESET_EMAIL: activeAdminEmail,
       ADMIN_RESET_PASSWORD: testNewPassword,
     });
 
     // Run 2: Restart simulation with identical environment variables (must NOT repeat)
     secondRunResult = await handleOneTimeAdminReset({
-      ADMIN_RESET_EMAIL: 'admin@gallery.com',
+      ADMIN_RESET_EMAIL: activeAdminEmail,
       ADMIN_RESET_PASSWORD: testNewPassword,
     });
   } finally {
@@ -143,7 +147,7 @@ async function runTests() {
   assert(secondRunResult.status === 'skipped' && secondRunResult.reason === 'already_executed', '7b. Startup reset is strictly NOT repeated on subsequent runs (idempotent marker)');
 
   // Verify updated user hash works with bcrypt.compare
-  const updatedAdmin = await userModel.findByEmail('admin@gallery.com');
+  const updatedAdmin = await userModel.findByEmail(activeAdminEmail);
   const passwordMatches = await bcrypt.compare(testNewPassword, updatedAdmin.password_hash);
   assert(passwordMatches, '7c. Updated password hash successfully verifies with new password');
 
