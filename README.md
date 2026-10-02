@@ -116,12 +116,12 @@ Deploy the **entire application (React Frontend + Express Backend)** as **ONE si
    | `CLOUDINARY_API_SECRET` | `your_api_secret` | Cloudinary API secret (Backend only) |
    | `UPLOAD_DIR` | `uploads` | Local directory fallback for temporary uploads |
    | `MAX_UPLOAD_MB` | `12` | Upload size limit in MB |
-   | `DEFAULT_ARTIST_NAME`| `Ranju Kumari` | Artist display name |
-   | `DEFAULT_CONTACT_EMAIL`| `ranjukumari754@gmail.com` | Artist inquiry email |
-   | `DEFAULT_CONTACT_PHONE`| `+91 9717157794` | Artist phone number |
-   | `DEFAULT_WHATSAPP_NUMBER`| `919717157794` | WhatsApp direct contact number |
-   | `DEFAULT_INSTAGRAM_URL`| `https://www.instagram.com/ranju_creators` | Artist Instagram page |
-   | `DEFAULT_YOUTUBE_URL`| `https://www.youtube.com/@ranju_craft_creater` | Artist YouTube channel |
+   | `DEFAULT_ARTIST_NAME`| `Your Artist Name` | Artist display name |
+   | `DEFAULT_CONTACT_EMAIL`| `your-email@example.com` | Artist inquiry email |
+   | `DEFAULT_CONTACT_PHONE`| `+91XXXXXXXXXX` | Artist phone number |
+   | `DEFAULT_WHATSAPP_NUMBER`| `91XXXXXXXXXX` | WhatsApp direct contact number |
+   | `DEFAULT_INSTAGRAM_URL`| `https://www.instagram.com/your_username` | Artist Instagram page |
+   | `DEFAULT_YOUTUBE_URL`| `https://www.youtube.com/@your_channel` | Artist YouTube channel |
 
    *(Notice: `VITE_API_URL` and `VITE_SERVER_URL` are **NOT** required because the frontend and backend share the exact same origin!)*
 
