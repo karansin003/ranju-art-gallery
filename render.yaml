@@ -6,7 +6,7 @@ services:
     name: ranju-art-gallery
     env: node
     plan: free
-    buildCommand: npm install --prefix server && npm install --prefix client && npm run build --prefix client
+    buildCommand: npm install --prefix server && npm install --include=dev --prefix client && npm run build --prefix client
     startCommand: npm start --prefix server
     envVars:
       - key: NODE_ENV
@@ -23,6 +23,12 @@ services:
         value: uploads
       - key: MAX_UPLOAD_MB
         value: 12
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
       - key: DEFAULT_ARTIST_NAME
         value: Ranju Kumari
       - key: DEFAULT_CONTACT_EMAIL
