@@ -82,59 +82,52 @@ npm run dev:client
 
 ---
 
-## 3. Render Production Deployment Guide
+## 3. Render Production Deployment Guide (Single Web Service)
 
-You can deploy the complete project on Render using two services:
+Deploy the **entire application (React Frontend + Express Backend)** as **ONE single Render Web Service**:
 
-### A. Backend (Render Web Service)
 1. In the [Render Dashboard](https://dashboard.render.com/), click **New** → **Web Service**.
-2. Connect your GitHub repository: `https://github.com/karansin003/ranju-art-gallery.git`.
-3. Configure the service:
-   - **Name:** `ranju-art-gallery-backend`
-   - **Region:** Choose the region closest to your Supabase database (e.g. Oregon or Frankfurt)
-   - **Root Directory:** `server`
+2. Connect your GitHub repository: `https://github.com/abhisin87654/ranju-ar-gallery.git`.
+3. Configure the Web Service:
+   - **Name:** `ranju-art-gallery` (or custom name like `ranjuart`)
+   - **Region:** Choose the region closest to your Supabase database (e.g. Frankfurt or Singapore)
+   - **Root Directory:** *(leave blank / project root)*
    - **Runtime:** `Node`
-   - **Build Command:** `npm install`
-   - **Start Command:** `npm start`
+   - **Build Command:**
+     ```bash
+     npm install --prefix server && npm install --prefix client && npm run build --prefix client
+     ```
+   - **Start Command:**
+     ```bash
+     npm start --prefix server
+     ```
    - **Instance Type:** `Free`
+
 4. Add **Environment Variables**:
    | Variable | Value | Description |
    | :--- | :--- | :--- |
    | `NODE_ENV` | `production` | Production environment |
-   | `PORT` | `5050` | Server listening port |
-   | `DATABASE_URL` | `postgresql://...` | Your Supabase connection string |
-   | `JWT_SECRET` | *(Random 64-char string)* | e.g. from `openssl rand -hex 64` |
-   | `CLIENT_URL` | `https://ranju-art-gallery.onrender.com` | Your frontend Render URL |
+   | `PORT` | `5050` | Default port (Render overrides with `PORT` dynamically) |
+   | `DATABASE_URL` | `postgresql://postgres...` | Your Supabase PostgreSQL connection string |
+   | `JWT_SECRET` | *(Render auto-generated or random 64-char string)* | e.g. from `openssl rand -hex 64` |
+   | `CLIENT_URL` | `https://ranjuart.onrender.com` | Your Render Web Service URL |
+   | `UPLOAD_DIR` | `uploads` | Local directory for art uploads |
+   | `MAX_UPLOAD_MB` | `12` | Upload size limit in MB |
    | `DEFAULT_ARTIST_NAME`| `Ranju Kumar` | Artist display name |
    | `DEFAULT_CONTACT_EMAIL`| `karansin8672@gmail.com` | Artist inquiry email |
    | `DEFAULT_CONTACT_PHONE`| `+91 8294618672` | Artist phone number |
-   | `DEFAULT_WHATSAPP_NUMBER`| `918294618672` | WhatsApp inquiry link |
-   | `DEFAULT_INSTAGRAM_URL`| `https://instagram.com/with_sk.2` | Artist Instagram |
-   | `DEFAULT_YOUTUBE_URL`| `https://www.youtube.com/` | Artist YouTube |
-5. Click **Create Web Service**. Note your backend URL (e.g. `https://ranju-art-gallery-backend.onrender.com`).
+   | `DEFAULT_WHATSAPP_NUMBER`| `918294618672` | WhatsApp direct contact number |
+   | `DEFAULT_INSTAGRAM_URL`| `https://instagram.com/with_sk.2` | Artist Instagram page |
+   | `DEFAULT_YOUTUBE_URL`| `https://www.youtube.com/` | Artist YouTube channel |
 
----
+   *(Notice: `VITE_API_URL` and `VITE_SERVER_URL` are **NOT** required because the frontend and backend share the exact same origin!)*
 
-### B. Frontend (Render Static Site)
-1. In the Render Dashboard, click **New** → **Static Site**.
-2. Connect your GitHub repository: `https://github.com/karansin003/ranju-art-gallery.git`.
-3. Configure the static site:
-   - **Name:** `ranju-art-gallery`
-   - **Root Directory:** `client`
-   - **Build Command:** `npm install && npm run build`
-   - **Publish Directory:** `dist`
-4. Add **Environment Variables**:
-   | Variable | Value | Description |
-   | :--- | :--- | :--- |
-   | `VITE_API_URL` | `https://ranju-art-gallery-backend.onrender.com/api` | Backend API URL |
-   | `VITE_SERVER_URL`| `https://ranju-art-gallery-backend.onrender.com` | Backend root URL (for uploaded images) |
-5. Add **Rewrite Rule** (for React Router client-side routing):
-   - Go to **Redirects/Rewrites** tab in your Static Site settings.
-   - Click **Add Rule**:
-     - **Source:** `/*`
-     - **Destination:** `/index.html`
-     - **Action:** `Rewrite`
-6. Click **Create Static Site**.
+5. Click **Create Web Service**.
+   - The build process will compile both frontend and backend dependencies, create the production bundle in `client/dist`, and launch the Express backend.
+   - The single service will serve:
+     - React SPA at `https://<your-service>.onrender.com/`
+     - Express API at `https://<your-service>.onrender.com/api/...`
+     - Uploaded images at `https://<your-service>.onrender.com/uploads/...`
 
 ---
 
