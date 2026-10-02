@@ -27,6 +27,9 @@ const EMPTY = {
   availability: 'AVAILABLE',
   quantity: 1,
   featured: false,
+  video_url: '',
+  instagram_url: '',
+  youtube_url: '',
 };
 
 export default function AdminArtworkForm() {
@@ -74,6 +77,9 @@ export default function AdminArtworkForm() {
             availability: a.availability || 'AVAILABLE',
             quantity: a.quantity ?? 1,
             featured: Boolean(a.featured),
+            video_url: a.video_url || '',
+            instagram_url: a.instagram_url || '',
+            youtube_url: a.youtube_url || '',
           });
           setMainPreview(a.main_image);
           setExistingImages(r.data.images || []);
@@ -452,6 +458,59 @@ export default function AdminArtworkForm() {
             <label htmlFor="featured" className="text-sm font-medium text-ink cursor-pointer">
               Feature on Homepage Showcase
             </label>
+          </div>
+        </div>
+
+        {/* Video & Social Media Links (Optional) */}
+        <div className="border-t border-rule/70 pt-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold tracking-wide uppercase text-ink">
+              Process Video & Social Links (Optional)
+            </h3>
+            <span className="text-[11px] text-ink/50">Shown on public artwork page</span>
+          </div>
+
+          <div>
+            <label className="label">Full Video URL (YouTube, Vimeo, etc.)</label>
+            <input
+              className="input"
+              type="url"
+              placeholder="https://www.youtube.com/watch?v=XXXXXXXX"
+              value={form.video_url}
+              onChange={(e) => update('video_url', e.target.value)}
+            />
+            <p className="text-[11px] text-ink/50 mt-1">
+              Shows a "🎬 View Full Video" button on this painting's page.
+            </p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-5">
+            <div>
+              <label className="label">Instagram Reel / Post URL</label>
+              <input
+                className="input"
+                type="url"
+                placeholder="https://www.instagram.com/reel/XXXXXXXX/"
+                value={form.instagram_url}
+                onChange={(e) => update('instagram_url', e.target.value)}
+              />
+              <p className="text-[11px] text-ink/50 mt-1">
+                Adds a "📸 View on Instagram" button.
+              </p>
+            </div>
+            <div>
+              <label className="label">YouTube Video / Shorts URL</label>
+              <input
+                className="input"
+                type="url"
+                placeholder="https://www.youtube.com/watch?v=XXXXXXXX"
+                value={form.youtube_url}
+                onChange={(e) => update('youtube_url', e.target.value)}
+              />
+              <p className="text-[11px] text-ink/50 mt-1">
+                Adds a "▶ View on YouTube" button.
+              </p>
+            </div>
           </div>
         </div>
 

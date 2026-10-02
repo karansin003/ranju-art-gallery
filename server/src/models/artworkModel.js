@@ -87,13 +87,14 @@ async function create(data) {
   const [rows, meta] = await db.query(
     `INSERT INTO artworks
       (slug, title, description, price, product_type, medium, dimensions, creation_year,
-       category_id, main_image, availability, quantity, featured)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)
+       category_id, main_image, availability, quantity, featured, video_url, instagram_url, youtube_url)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
      RETURNING id`,
     [
       data.slug, data.title, data.description, data.price, data.product_type,
       data.medium, data.dimensions, data.creation_year, data.category_id,
       data.main_image, data.availability || 'AVAILABLE', data.quantity ?? 1, !!data.featured,
+      data.video_url || null, data.instagram_url || null, data.youtube_url || null,
     ]
   );
   return meta.insertId || (rows[0] && rows[0].id);
@@ -119,6 +120,7 @@ async function update(id, data) {
   const allowed = [
     'title', 'description', 'price', 'product_type', 'medium', 'dimensions',
     'creation_year', 'category_id', 'main_image', 'availability', 'quantity', 'featured', 'slug',
+    'video_url', 'instagram_url', 'youtube_url',
   ];
   for (const key of allowed) {
     if (data[key] !== undefined) {

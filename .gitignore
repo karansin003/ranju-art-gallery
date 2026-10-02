@@ -3,15 +3,19 @@ node_modules/
 
 # Environment files
 .env
-.env.local
-.env.production
-.env.development
+.env.*
+!.env.example
 server/.env
+server/.env.*
+!server/.env.example
 client/.env
+client/.env.*
+!client/.env.example
 
 # Build outputs
 client/dist/
 dist/
+build/
 
 # Uploads and temporary files
 server/uploads/*
@@ -19,7 +23,10 @@ server/uploads/*
 uploads/*
 !uploads/.gitkeep
 
-# System & logs
+# System, logs & dumps
+logs/
 *.log
+*.sql.gz
+*.dump
 .DS_Store
 .system_generated/

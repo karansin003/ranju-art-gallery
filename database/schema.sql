@@ -46,6 +46,9 @@ CREATE TABLE IF NOT EXISTS artworks (
   availability VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE' CHECK (availability IN ('AVAILABLE','SOLD','RESERVED')),
   quantity INT NOT NULL DEFAULT 1,          -- originals: 1. prints/posters: stock count
   featured BOOLEAN NOT NULL DEFAULT FALSE,
+  video_url VARCHAR(500),
+  instagram_url VARCHAR(500),
+  youtube_url VARCHAR(500),
   version INT NOT NULL DEFAULT 0,           -- optimistic lock, prevents double-sell race
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP

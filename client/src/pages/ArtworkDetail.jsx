@@ -238,6 +238,54 @@ export default function ArtworkDetail() {
               </div>
             </div>
 
+            {/* Artwork Video & Social Links */}
+            {(artwork.video_url || artwork.instagram_url || artwork.youtube_url) && (
+              <div className="border-t border-rule/60 pt-4 space-y-2.5">
+                <p className="text-[11px] uppercase tracking-widest text-ink/50 font-medium">
+                  Artwork Media & Process
+                </p>
+                <div className="flex flex-col gap-2">
+                  {artwork.video_url && (
+                    <a
+                      href={artwork.video_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn-outline w-full py-3 text-center text-xs font-semibold tracking-wide flex items-center justify-center gap-2 hover:border-ochre hover:text-ochre-dark transition-all"
+                    >
+                      <span className="text-sm">🎬</span>
+                      <span>View Full Video</span>
+                    </a>
+                  )}
+                  {(artwork.instagram_url || artwork.youtube_url) && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                      {artwork.instagram_url && (
+                        <a
+                          href={artwork.instagram_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-outline text-center text-xs py-2.5 font-medium flex items-center justify-center gap-1.5 hover:border-pink-600 hover:text-pink-600 transition-all"
+                        >
+                          <span className="text-sm">📸</span>
+                          <span>View on Instagram</span>
+                        </a>
+                      )}
+                      {artwork.youtube_url && (
+                        <a
+                          href={artwork.youtube_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="btn-outline text-center text-xs py-2.5 font-medium flex items-center justify-center gap-1.5 hover:border-red-600 hover:text-red-600 transition-all"
+                        >
+                          <span className="text-sm">▶</span>
+                          <span>View on YouTube</span>
+                        </a>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
             {/* Shipping & Delivery Guarantees */}
             <div className="bg-card/60 border border-rule p-4 space-y-2 text-xs text-ink/70">
               <p className="font-semibold text-ink">Packaging & Delivery Notice</p>

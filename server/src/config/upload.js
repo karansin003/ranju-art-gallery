@@ -5,26 +5,39 @@ const fs = require('fs');
 const UPLOAD_DIR = path.join(__dirname, '..', '..', process.env.UPLOAD_DIR || 'uploads');
 if (!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR, { recursive: true });
 
-const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+const ALLOWED_MIME_TYPES = {
+  'image/jpeg': ['.jpg', '.jpeg'],
+  'image/png': ['.png'],
+  'image/webp': ['.webp'],
+  'image/gif': ['.gif'],
+};
+
+const ALLOWED_EXTS = ['.jpg', '.jpeg', '.png', '.webp', '.gif'];
 const MAX_BYTES = (Number(process.env.MAX_UPLOAD_MB) || 8) * 1024 * 1024;
 
-// NOTE: This stores files on local disk, kept fully separate from the
-// database (only the file path/URL is stored in MySQL). For production,
-// swap the `storage` engine below for an S3 / Cloudinary adapter —
-// nothing else in the app needs to change since controllers only ever
-// deal with the resulting URL.
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, UPLOAD_DIR),
   filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
+    // Strictly map extension to safe image extension only
+    let ext = path.extname(file.originalname).toLowerCase();
+    if (!ALLOWED_EXTS.includes(ext)) {
+      ext = file.mimetype === 'image/png' ? '.png' :
+            file.mimetype === 'image/webp' ? '.webp' :
+            file.mimetype === 'image/gif' ? '.gif' : '.jpg';
+    }
     const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`;
     cb(null, unique);
   },
 });
 
 function fileFilter(req, file, cb) {
-  if (!ALLOWED_TYPES.includes(file.mimetype)) {
-    return cb(new Error('Only JPEG, PNG, WEBP or GIF images are allowed'));
+  const mime = file.mimetype;
+  const ext = path.extname(file.originalname).toLowerCase();
+
+  if (!ALLOWED_MIME_TYPES[mime] || !ALLOWED_EXTS.includes(ext)) {
+    const error = new Error('Only JPEG, PNG, WEBP or GIF images are allowed.');
+    error.status = 400;
+    return cb(error);
   }
   cb(null, true);
 }
