@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-paper text-ink font-body;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display font-medium;
+    line-height: 1.1;
+  }
+  ::selection {
+    background: #B4823E33;
+  }
+  a {
+    color: inherit;
+  }
+  img {
+    max-width: 100%;
+    display: block;
+  }
+  :focus-visible {
+    outline: 2px solid #B4823E;
+    outline-offset: 2px;
+  }
+}
+
+@layer components {
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 text-sm tracking-wide transition-colors duration-200 border;
+  }
+  .btn-primary {
+    @apply btn bg-ink text-paper border-ink hover:bg-ochre-dark hover:border-ochre-dark;
+  }
+  .btn-outline {
+    @apply btn bg-transparent text-ink border-ink hover:bg-ink hover:text-paper;
+  }
+  .btn-ghost {
+    @apply btn border-transparent underline underline-offset-4 hover:text-ochre-dark;
+  }
+  .input {
+    @apply w-full border border-rule bg-white/60 px-4 py-3 text-sm text-ink placeholder:text-ink/40 focus:border-ochre outline-none;
+  }
+  .label {
+    @apply block text-xs tracking-wide text-ink/60 mb-1.5;
+  }
+  .section {
+    @apply max-w-content mx-auto px-6 md:px-10;
+  }
+}

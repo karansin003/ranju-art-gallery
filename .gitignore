@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+
+# Environment files
+.env
+.env.local
+.env.production
+.env.development
+server/.env
+client/.env
+
+# Build outputs
+client/dist/
+dist/
+
+# Uploads and temporary files
+server/uploads/*
+!server/uploads/.gitkeep
+uploads/*
+!uploads/.gitkeep
+
+# System & logs
+*.log
+.DS_Store
+.system_generated/
