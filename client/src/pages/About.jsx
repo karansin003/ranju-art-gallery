@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useSettings } from '../hooks/useSettings.jsx';
+import { getImageUrl } from '../utils/imageUrl';
 
 export default function About() {
   const { settings } = useSettings();
@@ -12,8 +13,8 @@ export default function About() {
           <div className="border border-rule bg-card p-3 shadow-lg max-w-md mx-auto md:max-w-none">
             {settings?.profile_image ? (
               <img
-                src={settings.profile_image}
-                alt={settings.artist_name}
+                src={getImageUrl(settings.profile_image)}
+                alt={settings.artist_name || 'The Artist'}
                 className="w-full aspect-[4/5] object-cover"
               />
             ) : (
