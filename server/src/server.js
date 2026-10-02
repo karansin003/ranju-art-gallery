@@ -63,7 +63,9 @@ app.use('/uploads', express.static(UPLOAD_DIR));
 // ----------------------------------------------------
 // API Routes (Registered BEFORE static & SPA fallback)
 // ----------------------------------------------------
-app.get('/api/health', (req, res) => res.json({ status: 'ok' }));
+// Health check endpoints
+app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', uptime: process.uptime() }));
+app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
 
 app.use('/api/admin/dashboard', dashboardRoutes);
 app.use('/api/admin', authRoutes);
@@ -102,7 +104,8 @@ app.get('*', (req, res, next) => {
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5050;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+const port = Number(process.env.PORT) || 10000;
+app.listen(port, "0.0.0.0", () => {
+  console.log(`Server running on 0.0.0.0:${port}`);
 });
+

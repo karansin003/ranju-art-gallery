@@ -107,7 +107,7 @@ Deploy the **entire application (React Frontend + Express Backend)** as **ONE si
    | Variable | Value | Description |
    | :--- | :--- | :--- |
    | `NODE_ENV` | `production` | Production environment |
-   | `PORT` | `5050` | Default port (Render overrides with `PORT` dynamically) |
+   | `PORT` | *(Leave empty on Render)* | Automatically assigned by Render (defaults to 10000) |
    | `DATABASE_URL` | `postgresql://postgres...` | Your Supabase PostgreSQL connection string |
    | `JWT_SECRET` | *(Render auto-generated or random 64-char string)* | e.g. from `openssl rand -hex 64` |
    | `CLIENT_URL` | `https://ranjuart.onrender.com` | Your Render Web Service URL |

@@ -11,8 +11,6 @@ services:
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5050
       - key: DATABASE_URL
         sync: false # Set in Render Dashboard with your Supabase PostgreSQL connection string
       - key: JWT_SECRET
