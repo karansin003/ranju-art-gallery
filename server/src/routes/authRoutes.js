@@ -10,7 +10,10 @@ const router = express.Router();
 router.post(
   '/login',
   loginLimiter,
-  [body('email').isEmail().withMessage('A valid email is required.'), body('password').notEmpty()],
+  [
+    body('email').trim().isEmail().withMessage('A valid email is required.').normalizeEmail({ gmail_remove_dots: false }),
+    body('password').notEmpty().withMessage('Password is required.'),
+  ],
   validate,
   authController.login
 );

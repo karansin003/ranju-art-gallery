@@ -5,18 +5,30 @@ const userModel = require('../models/userModel');
 async function login(req, res, next) {
   try {
     const { email, password } = req.body;
-    const user = await userModel.findByEmail(email);
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-    // Same generic error whether the email doesn't exist or the password is
-    // wrong — never reveal which one, to avoid leaking valid admin emails.
+    if (!normalizedEmail || !password) {
+      console.log('🔒 [AUTH] Login attempt failed: Missing email or password.');
+      return res.status(400).json({ error: 'Email and password are required.' });
+    }
+
+    const user = await userModel.findByEmail(normalizedEmail);
+
+    // Diagnostic logging without leaking credentials or hashes
     if (!user) {
+      console.log('🔒 [AUTH] Login email lookup failure: No user account found for submitted email.');
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
+
+    console.log(`🔒 [AUTH] Login email lookup success: Account found with role='${user.role}'.`);
 
     const match = await bcrypt.compare(password, user.password_hash);
     if (!match) {
+      console.log('🔒 [AUTH] Password verification failure: Bcrypt comparison mismatch.');
       return res.status(401).json({ error: 'Invalid email or password.' });
     }
+
+    console.log('🔒 [AUTH] Password verification success: Bcrypt comparison matched.');
 
     const token = jwt.sign(
       { sub: user.id, email: user.email, role: user.role },
@@ -26,6 +38,7 @@ async function login(req, res, next) {
 
     res.json({ token, user: { id: user.id, name: user.name, email: user.email } });
   } catch (err) {
+    console.error('🔒 [AUTH] Login error:', err.message);
     next(err);
   }
 }

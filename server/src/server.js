@@ -22,6 +22,10 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 
+// Trust Render's single front-facing reverse proxy so req.ip and express-rate-limit
+// safely and accurately process X-Forwarded-For headers without accepting arbitrary spoofed hops.
+app.set('trust proxy', 1);
+
 app.use(
   helmet({
     crossOriginResourcePolicy: false,

@@ -1,7 +1,10 @@
 const db = require('../config/db');
 
 async function findByEmail(email) {
-  const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email]);
+  const [rows] = await db.query(
+    'SELECT * FROM users WHERE LOWER(TRIM(email)) = LOWER(TRIM(?))',
+    [email]
+  );
   return rows[0];
 }
 
