@@ -61,7 +61,7 @@ async function findBySlug(slug) {
 
 async function getImages(artworkId) {
   const [rows] = await db.query(
-    'SELECT id, image_url, sort_order FROM artwork_images WHERE artwork_id = ? ORDER BY sort_order ASC',
+    'SELECT id, image_url, cloudinary_public_id, sort_order FROM artwork_images WHERE artwork_id = ? ORDER BY sort_order ASC',
     [artworkId]
   );
   return rows;
@@ -87,29 +87,35 @@ async function create(data) {
   const [rows, meta] = await db.query(
     `INSERT INTO artworks
       (slug, title, description, price, product_type, medium, dimensions, creation_year,
-       category_id, main_image, availability, quantity, featured, video_url, instagram_url, youtube_url)
-     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+       category_id, main_image, cloudinary_public_id, availability, quantity, featured,
+       video_url, instagram_url, youtube_url)
+     VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
      RETURNING id`,
     [
       data.slug, data.title, data.description, data.price, data.product_type,
       data.medium, data.dimensions, data.creation_year, data.category_id,
-      data.main_image, data.availability || 'AVAILABLE', data.quantity ?? 1, !!data.featured,
+      data.main_image, data.cloudinary_public_id || null, data.availability || 'AVAILABLE',
+      data.quantity ?? 1, !!data.featured,
       data.video_url || null, data.instagram_url || null, data.youtube_url || null,
     ]
   );
   return meta.insertId || (rows[0] && rows[0].id);
 }
 
-async function addImages(artworkId, urls) {
-  if (!urls || !urls.length) return;
+async function addImages(artworkId, images) {
+  if (!images || !images.length) return;
   const placeholders = [];
   const params = [];
-  urls.forEach((url, idx) => {
-    placeholders.push('(?, ?, ?)');
-    params.push(artworkId, url, idx);
+  images.forEach((item, idx) => {
+    placeholders.push('(?, ?, ?, ?)');
+    if (typeof item === 'string') {
+      params.push(artworkId, item, null, idx);
+    } else {
+      params.push(artworkId, item.url, item.public_id || null, idx);
+    }
   });
   await db.query(
-    `INSERT INTO artwork_images (artwork_id, image_url, sort_order) VALUES ${placeholders.join(', ')}`,
+    `INSERT INTO artwork_images (artwork_id, image_url, cloudinary_public_id, sort_order) VALUES ${placeholders.join(', ')}`,
     params
   );
 }
@@ -119,7 +125,8 @@ async function update(id, data) {
   const params = [];
   const allowed = [
     'title', 'description', 'price', 'product_type', 'medium', 'dimensions',
-    'creation_year', 'category_id', 'main_image', 'availability', 'quantity', 'featured', 'slug',
+    'creation_year', 'category_id', 'main_image', 'cloudinary_public_id',
+    'availability', 'quantity', 'featured', 'slug',
     'video_url', 'instagram_url', 'youtube_url',
   ];
   for (const key of allowed) {
@@ -168,10 +175,13 @@ async function tryReserveForOrder(conn, artworkId) {
 }
 
 async function deleteGalleryImage(artworkId, imageId) {
-  const [rows] = await db.query('SELECT image_url FROM artwork_images WHERE id = ? AND artwork_id = ?', [imageId, artworkId]);
+  const [rows] = await db.query(
+    'SELECT image_url, cloudinary_public_id FROM artwork_images WHERE id = ? AND artwork_id = ?',
+    [imageId, artworkId]
+  );
   if (!rows[0]) return null;
   await db.query('DELETE FROM artwork_images WHERE id = ? AND artwork_id = ?', [imageId, artworkId]);
-  return rows[0].image_url;
+  return rows[0];
 }
 
 module.exports = {

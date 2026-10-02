@@ -111,7 +111,10 @@ Deploy the **entire application (React Frontend + Express Backend)** as **ONE si
    | `DATABASE_URL` | `postgresql://postgres...` | Your Supabase PostgreSQL connection string |
    | `JWT_SECRET` | *(Render auto-generated or random 64-char string)* | e.g. from `openssl rand -hex 64` |
    | `CLIENT_URL` | `https://ranjuart.onrender.com` | Your Render Web Service URL |
-   | `UPLOAD_DIR` | `uploads` | Local directory for art uploads |
+   | `CLOUDINARY_CLOUD_NAME` | `your_cloud_name` | Cloudinary account cloud name (Backend only) |
+   | `CLOUDINARY_API_KEY` | `your_api_key` | Cloudinary API key (Backend only) |
+   | `CLOUDINARY_API_SECRET` | `your_api_secret` | Cloudinary API secret (Backend only) |
+   | `UPLOAD_DIR` | `uploads` | Local directory fallback for temporary uploads |
    | `MAX_UPLOAD_MB` | `12` | Upload size limit in MB |
    | `DEFAULT_ARTIST_NAME`| `Ranju Kumari` | Artist display name |
    | `DEFAULT_CONTACT_EMAIL`| `ranjukumari754@gmail.com` | Artist inquiry email |

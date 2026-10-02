@@ -43,6 +43,7 @@ CREATE TABLE IF NOT EXISTS artworks (
   creation_year SMALLINT,
   category_id INT REFERENCES categories(id) ON DELETE SET NULL,
   main_image VARCHAR(500) NOT NULL,
+  cloudinary_public_id VARCHAR(255),
   availability VARCHAR(20) NOT NULL DEFAULT 'AVAILABLE' CHECK (availability IN ('AVAILABLE','SOLD','RESERVED')),
   quantity INT NOT NULL DEFAULT 1,          -- originals: 1. prints/posters: stock count
   featured BOOLEAN NOT NULL DEFAULT FALSE,
@@ -66,6 +67,7 @@ CREATE TABLE IF NOT EXISTS artwork_images (
   id SERIAL PRIMARY KEY,
   artwork_id INT NOT NULL REFERENCES artworks(id) ON DELETE CASCADE,
   image_url VARCHAR(500) NOT NULL,
+  cloudinary_public_id VARCHAR(255),
   sort_order INT NOT NULL DEFAULT 0
 );
 
