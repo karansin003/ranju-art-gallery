@@ -227,7 +227,8 @@ async function testSuite() {
 
   // 7. Test userModel
   console.log('Testing userModel...');
-  const hash = await bcrypt.hash('your_password', 10);
+  const mockPassword = require('crypto').randomBytes(16).toString('hex');
+  const hash = await bcrypt.hash(mockPassword, 10);
   const [userRows, userMeta] = await testDb.query(
     `INSERT INTO users (name, email, password_hash, role) VALUES (?, ?, ?, 'admin') RETURNING id`,
     ['Ranju Kumar', 'admin@gallery.com', hash]

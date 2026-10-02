@@ -137,9 +137,8 @@ Deploy the **entire application (React Frontend + Express Backend)** as **ONE si
 ## 4. Admin Access & Management
 
 - **Admin Login:** `/admin/login`
-- **Default Credentials:**
-  - **Email:** `admin@gallery.com`
-  - **Password:** `your_password`
+- **Initial Admin Setup:** Set `ADMIN_INITIAL_PASSWORD` in your environment (e.g. Render Dashboard or `.env`) before running database setup, or register the initial admin account securely via the web setup route at `/admin/setup`.
+- **Security:** All admin passwords are encrypted with bcrypt (12 rounds) salted key stretching. Plaintext passwords are never stored in source code, database tables, or returned by APIs.
 *(You can update your credentials and artist profile from the Admin Settings tab anytime).*
 
 ### Everyday Admin Capabilities:

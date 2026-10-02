@@ -16,14 +16,25 @@ async function run() {
   // Verify / seed default admin user
   const [existingUsers] = await db.query('SELECT id, email FROM users LIMIT 1');
   if (!existingUsers.length) {
-    const hash = await bcrypt.hash('your_password', 12);
-    await db.query(
-      `INSERT INTO users (name, email, password_hash, role)
-       VALUES ($1, $2, $3, $4)
-       ON CONFLICT (email) DO NOTHING`,
-      ['Ranju Kumar', 'admin@gallery.com', hash, 'admin']
-    );
-    console.log('✅ Created default admin user (admin@gallery.com / your_password).');
+    const initialPassword = process.env.ADMIN_INITIAL_PASSWORD;
+    if (!initialPassword) {
+      console.log('ℹ️ No existing admin user found. To create an initial admin, set ADMIN_INITIAL_PASSWORD in your environment:');
+      console.log('   ADMIN_INITIAL_PASSWORD="your-secure-password" npm run db:setup --prefix server');
+      console.log('   Alternatively, register your initial admin via /admin/setup.');
+    } else {
+      const hash = await bcrypt.hash(initialPassword, 12);
+      const adminEmail = process.env.ADMIN_EMAIL || 'admin@gallery.com';
+      const adminName = process.env.ADMIN_NAME || 'Ranju Art Gallery';
+      await db.query(
+        `INSERT INTO users (name, email, password_hash, role)
+         VALUES ($1, $2, $3, $4)
+         ON CONFLICT (email) DO NOTHING`,
+        [adminName, adminEmail, hash, 'admin']
+      );
+      console.log(`✅ Initial admin account created for ${adminEmail}.`);
+    }
+  } else {
+    console.log('✅ Admin user account already exists. Existing credentials preserved.');
   }
 
   // Seed initial artworks if table is empty
