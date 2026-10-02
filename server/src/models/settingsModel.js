@@ -1,9 +1,17 @@
 const db = require('../config/db');
+const cache = require('../utils/cache');
+
+const SETTINGS_CACHE_KEY = 'site_settings';
+const SETTINGS_TTL_MS = 60000; // 60 seconds
 
 async function getAll() {
+  const cached = cache.get(SETTINGS_CACHE_KEY);
+  if (cached) return cached;
+
   const [rows] = await db.query('SELECT setting_key, setting_value FROM site_settings');
   const settings = {};
   for (const row of rows) settings[row.setting_key] = row.setting_value;
+  cache.set(SETTINGS_CACHE_KEY, settings, SETTINGS_TTL_MS);
   return settings;
 }
 
@@ -21,6 +29,7 @@ async function updateMany(updates) {
       );
     }
     await conn.commit();
+    cache.del(SETTINGS_CACHE_KEY);
   } catch (err) {
     await conn.rollback();
     throw err;

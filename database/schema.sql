@@ -59,6 +59,8 @@ CREATE INDEX IF NOT EXISTS idx_artworks_availability ON artworks(availability);
 CREATE INDEX IF NOT EXISTS idx_artworks_featured ON artworks(featured);
 CREATE INDEX IF NOT EXISTS idx_artworks_category ON artworks(category_id);
 CREATE INDEX IF NOT EXISTS idx_artworks_price ON artworks(price);
+CREATE INDEX IF NOT EXISTS idx_artworks_created_at ON artworks(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_artworks_featured_created ON artworks(featured, created_at DESC);
 
 -- ---------------------------------------------------------
 -- artwork_images (extra gallery images per artwork)
@@ -127,6 +129,7 @@ CREATE TABLE IF NOT EXISTS reviews (
 );
 
 CREATE INDEX IF NOT EXISTS idx_reviews_status ON reviews(status);
+CREATE INDEX IF NOT EXISTS idx_reviews_status_created ON reviews(status, created_at DESC);
 
 -- ---------------------------------------------------------
 -- custom_requests
@@ -175,6 +178,8 @@ CREATE TABLE IF NOT EXISTS videos (
   display_order INT NOT NULL DEFAULT 0,
   created_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE INDEX IF NOT EXISTS idx_videos_featured_display ON videos(featured, display_order ASC);
 
 -- ---------------------------------------------------------
 -- site_settings

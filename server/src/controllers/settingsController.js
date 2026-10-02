@@ -4,6 +4,7 @@ const cloudinaryConfig = require('../config/cloudinary');
 
 async function getPublic(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
     const settings = await settingsModel.getAll();
     res.json({ settings });
   } catch (err) {

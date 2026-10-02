@@ -7,6 +7,7 @@ const cloudinaryConfig = require('../config/cloudinary');
 
 async function list(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=30, stale-while-revalidate=60');
     const { search, category, medium, availability, minPrice, maxPrice, sort } = req.query;
     const rows = await artworkModel.list({ search, category, medium, availability, minPrice, maxPrice, sort });
     res.json({ artworks: rows });
@@ -17,6 +18,7 @@ async function list(req, res, next) {
 
 async function getFeatured(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
     const rows = await artworkModel.getFeatured(6);
     res.json({ artworks: rows });
   } catch (err) {
@@ -26,6 +28,7 @@ async function getFeatured(req, res, next) {
 
 async function getOne(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
     const { id } = req.params;
     // Supports lookup by numeric id OR SEO slug (/artwork/sunset-dreams).
     const artwork = /^\d+$/.test(id) ? await artworkModel.findById(id) : await artworkModel.findBySlug(id);

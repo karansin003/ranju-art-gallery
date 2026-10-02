@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { formatPrice, availabilityLabel } from '../utils/format';
-import { getImageUrl } from '../utils/imageUrl';
+import { getThumbnailUrl } from '../utils/imageUrl';
 
 export default function ArtworkCard({ artwork }) {
   const isAvailable = artwork.availability === 'AVAILABLE';
@@ -13,7 +13,7 @@ export default function ArtworkCard({ artwork }) {
     <div className="group flex flex-col justify-between border border-rule bg-card/60 hover:bg-card transition-all duration-300 hover:shadow-lg hover:border-ink/20">
       <Link to={detailUrl} className="block relative overflow-hidden bg-card aspect-[4/5]">
         <img
-          src={getImageUrl(artwork.main_image)}
+          src={getThumbnailUrl(artwork.main_image, 600)}
           alt={artwork.title}
           loading="lazy"
           className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"

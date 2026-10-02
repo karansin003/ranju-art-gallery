@@ -71,8 +71,9 @@ export default function ArtworkDetail() {
             onClick={() => setLightbox(true)}
           >
             <img
-              src={getImageUrl(activeImage)}
+              src={getImageUrl(activeImage, { width: 1200 })}
               alt={artwork.title}
+              fetchPriority="high"
               className="w-full aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-[1.02]"
             />
             <div className="absolute bottom-3 right-3 bg-ink/75 text-paper text-[11px] px-2.5 py-1 backdrop-blur-sm pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
@@ -93,8 +94,9 @@ export default function ArtworkDetail() {
                   }`}
                 >
                   <img
-                    src={getImageUrl(img)}
+                    src={getImageUrl(img, { width: 160 })}
                     alt={`${artwork.title} view ${idx + 1}`}
+                    loading="lazy"
                     className="w-16 h-16 sm:w-20 sm:h-20 object-cover"
                   />
                 </button>

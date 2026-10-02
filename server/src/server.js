@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
+const compression = require('compression');
 const path = require('path');
 const fs = require('fs');
 
@@ -21,6 +22,9 @@ const settingsRoutes = require('./routes/settingsRoutes');
 const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
+
+// Enable Gzip/Brotli response compression for all responses
+app.use(compression());
 
 // Trust Render's single front-facing reverse proxy so req.ip and express-rate-limit
 // safely and accurately process X-Forwarded-For headers without accepting arbitrary spoofed hops.
@@ -61,8 +65,8 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 
-// Serve uploaded images directly
-app.use('/uploads', express.static(UPLOAD_DIR));
+// Serve uploaded images directly with 1-day browser cache
+app.use('/uploads', express.static(UPLOAD_DIR, { maxAge: '1d' }));
 
 // ----------------------------------------------------
 // API Routes (Registered BEFORE static & SPA fallback)
@@ -70,6 +74,14 @@ app.use('/uploads', express.static(UPLOAD_DIR));
 // Health check endpoints
 app.get('/api/health', (req, res) => res.status(200).json({ status: 'ok', uptime: process.uptime() }));
 app.get('/health', (req, res) => res.status(200).json({ status: 'ok' }));
+
+// Ensure all admin/private endpoints are NEVER cached
+app.use('/api/admin', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
 
 app.use('/api/admin/dashboard', dashboardRoutes);
 app.use('/api/admin', authRoutes);
@@ -93,12 +105,31 @@ app.all('/api/*', (req, res) => {
 const clientDistPath = path.resolve(__dirname, '../../client/dist');
 const indexPath = path.join(clientDistPath, 'index.html');
 
-// Serve static assets from client/dist (JS, CSS, SVGs, images)
-app.use(express.static(clientDistPath));
+// 1. Content-hashed immutable Vite assets (/assets/*) cached permanently for 1 year
+app.use(
+  '/assets',
+  express.static(path.join(clientDistPath, 'assets'), {
+    maxAge: '1y',
+    immutable: true,
+  })
+);
 
-// For all other GET requests, serve React's index.html (SPA client-side routing)
+// 2. Root static files (favicon, manifest, etc.) cached for 1 hour, index.html uncached
+app.use(
+  express.static(clientDistPath, {
+    maxAge: '1h',
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith('index.html')) {
+        res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
+      }
+    },
+  })
+);
+
+// 3. For all other GET requests, serve React's index.html with no-cache so deployments update immediately
 app.get('*', (req, res, next) => {
   if (fs.existsSync(indexPath)) {
+    res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate');
     return res.sendFile(indexPath);
   }
   next();

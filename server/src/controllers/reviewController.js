@@ -2,6 +2,7 @@ const reviewModel = require('../models/reviewModel');
 
 async function listApproved(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
     const { artworkId, limit } = req.query;
     const reviews = await reviewModel.listApproved({ artworkId, limit: limit ? Number(limit) : undefined });
     res.json({ reviews });

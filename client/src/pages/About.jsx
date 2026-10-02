@@ -13,8 +13,9 @@ export default function About() {
           <div className="border border-rule bg-card p-3 shadow-lg max-w-md mx-auto md:max-w-none">
             {settings?.profile_image ? (
               <img
-                src={getImageUrl(settings.profile_image)}
+                src={getImageUrl(settings.profile_image, { width: 800 })}
                 alt={settings.artist_name || 'The Artist'}
+                fetchPriority="high"
                 className="w-full aspect-[4/5] object-cover"
               />
             ) : (

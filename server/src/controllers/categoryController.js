@@ -3,6 +3,7 @@ const categoryModel = require('../models/categoryModel');
 
 async function list(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=120, stale-while-revalidate=300');
     const categories = await categoryModel.list();
     res.json({ categories });
   } catch (err) {

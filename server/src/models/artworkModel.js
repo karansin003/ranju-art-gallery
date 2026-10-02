@@ -1,4 +1,5 @@
 const db = require('../config/db');
+const cache = require('../utils/cache');
 
 const BASE_SELECT = `
   SELECT a.*, c.name AS category_name, c.slug AS category_slug
@@ -68,10 +69,15 @@ async function getImages(artworkId) {
 }
 
 async function getFeatured(limit = 6) {
+  const cacheKey = `artworks_featured_${limit}`;
+  const cached = cache.get(cacheKey);
+  if (cached) return cached;
+
   const [rows] = await db.query(
     `${BASE_SELECT} WHERE a.featured = TRUE ORDER BY a.created_at DESC LIMIT ?`,
     [limit]
   );
+  cache.set(cacheKey, rows, 60000);
   return rows;
 }
 
@@ -99,6 +105,7 @@ async function create(data) {
       data.video_url || null, data.instagram_url || null, data.youtube_url || null,
     ]
   );
+  cache.delPrefix('artworks_');
   return meta.insertId || (rows[0] && rows[0].id);
 }
 
@@ -138,10 +145,12 @@ async function update(id, data) {
   if (!fields.length) return;
   params.push(id);
   await db.query(`UPDATE artworks SET ${fields.join(', ')} WHERE id = ?`, params);
+  cache.delPrefix('artworks_');
 }
 
 async function remove(id) {
   await db.query('DELETE FROM artworks WHERE id = ?', [id]);
+  cache.delPrefix('artworks_');
 }
 
 // Atomically claims an artwork for an order: only succeeds if it is still
@@ -171,6 +180,7 @@ async function tryReserveForOrder(conn, artworkId) {
     return { ok: false, reason: 'This artwork was just claimed by another order. Please refresh.' };
   }
 
+  cache.delPrefix('artworks_');
   return { ok: true, artwork };
 }
 

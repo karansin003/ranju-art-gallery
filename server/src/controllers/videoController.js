@@ -17,6 +17,7 @@ function extractYouTubeId(url) {
 
 async function list(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
     const videos = await videoModel.list();
     res.json({ videos });
   } catch (err) {
@@ -26,6 +27,7 @@ async function list(req, res, next) {
 
 async function getFeatured(req, res, next) {
   try {
+    res.setHeader('Cache-Control', 'public, max-age=60, stale-while-revalidate=120');
     const videos = await videoModel.getFeatured(4);
     res.json({ videos });
   } catch (err) {

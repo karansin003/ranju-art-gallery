@@ -74,8 +74,9 @@ export default function Home() {
                 {heroArtwork ? (
                   <Link to={`/artwork/${heroArtwork.slug || heroArtwork.id}`} className="block group overflow-hidden">
                     <img
-                      src={getImageUrl(heroArtwork.main_image)}
+                      src={getImageUrl(heroArtwork.main_image, { width: 900 })}
                       alt={heroArtwork.title}
+                      fetchPriority="high"
                       className="w-full aspect-[4/5] object-cover transition-transform duration-700 ease-out group-hover:scale-105"
                     />
                     <div className="mt-3 flex items-center justify-between text-xs">
@@ -160,8 +161,9 @@ export default function Home() {
           <div className="border border-rule bg-card p-3 shadow-md max-w-sm mx-auto md:max-w-none">
             {settings?.profile_image ? (
               <img
-                src={getImageUrl(settings.profile_image)}
-                alt={settings.artist_name}
+                src={getImageUrl(settings.profile_image, { width: 600 })}
+                alt={settings.artist_name || 'The Artist'}
+                loading="lazy"
                 className="w-full aspect-[4/5] object-cover"
               />
             ) : (
